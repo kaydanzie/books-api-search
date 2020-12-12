@@ -5,11 +5,11 @@ class BookService
   base_uri "https://reststop.randomhouse.com"
   basic_auth "username", "password"
 
-  BOOKS_EP = "/resources/books".freeze
+  WORKS_EP = "/resources/works".freeze
 
-  # GET /resources/books
-  def books(query = nil)
-    response = self.class.get("#{BOOKS_EP}?#{query}")
+  # GET /resources/works
+  def works(query = nil)
+    response = self.class.get("#{WORKS_EP}?#{query&.to_query}")
     response.parsed_response
   end
 end
