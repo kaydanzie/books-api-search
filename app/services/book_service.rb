@@ -9,7 +9,6 @@ class BookService
 
   # GET /resources/works
   def works(query)
-    response = self.class.get("#{WORKS_EP}?#{query.to_query}")
-    response.parsed_response
+    self.class.get("#{WORKS_EP}?#{query.to_query}")
   end
 end
