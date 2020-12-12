@@ -49,5 +49,17 @@ RSpec.describe "Books", type: :request do
         expect(api_request).not_to have_been_requested
       end
     end
+
+    context 'when the search query param is missing' do
+      it 'returns an error json' do
+        # Act
+        get books_path
+
+        # Assert
+        expect(response.content_type).to eq("application/json")
+        expect(response).to have_http_status(:bad_request)
+        expect(JSON.parse(response.body)).to have_key("error")
+      end
+    end
   end
 end
