@@ -8,8 +8,8 @@ class BookService
   WORKS_EP = "/resources/works".freeze
 
   # GET /resources/works
-  def works(query = nil)
-    response = self.class.get("#{WORKS_EP}?#{query&.to_query}")
+  def works(query)
+    response = self.class.get("#{WORKS_EP}?#{query.to_query}")
     response.parsed_response
   end
 end
