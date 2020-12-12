@@ -61,5 +61,29 @@ RSpec.describe "Books", type: :request do
         expect(JSON.parse(response.body)).to have_key("error")
       end
     end
+
+    context 'when the external API returns an error' do
+      it 'renders a json with the error' do
+        # Arrange
+        stub_works_api_not_found
+
+        # Act
+        get books_path(params: { search: "The Great Gatsby" })
+
+        # Assert
+        expect(response).to have_http_status(:not_found)
+        expect(response.content_type).to eq("application/json")
+      end
+
+      it "doesn't create a new BookSearch" do
+        # Arrange
+        stub_works_api_not_found
+
+        # Act & Assert
+        expect {
+          get books_path(params: { search: "The Great Gatsby" })
+        }.not_to change(BookSearch, :count)
+      end
+    end
   end
 end
