@@ -7,6 +7,10 @@ class BookService
 
   WORKS_EP = "/resources/works".freeze
 
+  # http://www.penguinrandomhouse.biz/webservices/rest/#works
+  WORKS_FIELDS = %w(authorweb onsaledate series titleAuth titleSubtitleAuth
+                    titleshort titleweb workid)
+
   # GET /resources/works
   def works(query)
     self.class.get("#{WORKS_EP}?#{query.to_query}")
