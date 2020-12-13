@@ -44,7 +44,7 @@ RSpec.describe "Books", type: :request do
 
       it "doesn't create a new BookSearch" do
         # Arrange
-        BookSearch.create(query_params: params)
+        BookSearch.create(query_params: params, api_data: works_api_response)
 
         # Act & Assert
         expect { get books_path(params: params) }.not_to change(BookSearch, :count)
@@ -52,7 +52,7 @@ RSpec.describe "Books", type: :request do
 
       it "doesn't make a request to the external API" do
         # Arrange
-        BookSearch.create(query_params: params)
+        BookSearch.create(query_params: params, api_data: works_api_response)
         api_request = stub_works_api
 
         # Act
