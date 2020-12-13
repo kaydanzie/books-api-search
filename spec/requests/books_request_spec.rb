@@ -26,6 +26,19 @@ RSpec.describe "Books", type: :request do
       }.to change(BookSearch, :count).by(1)
     end
 
+    it 'is filterable' do
+      # Arrange
+      stub_works_api
+
+      # Act
+      get books_path(params: { search: "The Great Gatsby", fields: "titleweb,titleshort" })
+
+      # Assert
+      single_work = JSON.parse(response.body)['works']['work'].first
+      expect(single_work).to have_key('titleweb')
+      expect(single_work).not_to have_key('workid')
+    end
+
     context 'if BookSearch with query params already exists' do
       let(:params) { { search: "The Great Gatsby" } }
 
