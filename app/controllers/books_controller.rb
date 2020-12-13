@@ -7,7 +7,10 @@ class BooksController < ApplicationController
   # GET /api/v1/books
   def index
     if @book_search.present?
-      render json: @book_search.api_data, status: :ok
+      filtered_data = BookService.new.filtered_response(
+        @book_search.api_data, request.query_parameters["fields"]
+      )
+      render json: filtered_data, status: :ok
     else
       api_response = BookService.new.works(request.query_parameters.slice(:search))
 
@@ -20,9 +23,8 @@ class BooksController < ApplicationController
         )
       end
 
-      # Just returns all fields if user didn't specify any
-      permitted_fields = allowed_fields.presence || BookService::WORKS_FIELDS
-      api_response.parsed_response.dig('works', 'work')&.map! { |a| a.slice(*permitted_fields) }
+      # TODO: Respond with an error if the user requests an invalid field. For now, just ignore it.
+      filtered_data = BookService.new.filtered_response(api_response, request.query_parameters["fields"])
       render json: api_response.parsed_response, status: api_response.code
     end
   end
@@ -31,12 +33,5 @@ class BooksController < ApplicationController
 
   def set_book_search
     @book_search = BookSearch.find_by(query_params: request.query_parameters.except("fields"))
-  end
-
-  # TODO: Respond with an error if the user requests an invalid field. For now, just ignore it.
-  def allowed_fields
-    return nil if request.query_parameters['fields'].blank?
-
-    request.query_parameters['fields'].split(',') & BookService::WORKS_FIELDS
   end
 end
